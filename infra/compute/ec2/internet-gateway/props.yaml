@@ -1,0 +1,14 @@
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-internetgateway.html#cfn-ec2-internetgateway-tags
+# Type: list
+# Optional
+#tags:
+#  -
+    # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html#cfn-resource-tags-key
+    # Type: string
+    # Required
+#    key: ''
+
+    # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html#cfn-resource-tags-value
+    # Type: string
+    # Required
+#    value: ''

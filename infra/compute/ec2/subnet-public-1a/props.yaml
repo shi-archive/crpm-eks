@@ -1,0 +1,44 @@
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html#cfn-ec2-subnet-cidrblock
+# Type: string
+# Required
+cidrBlock: '192.168.32.0/19'
+
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html#cfn-awsec2subnet-prop-vpcid
+# Type: string
+# Required
+#vpcId: ''
+
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html#cfn-ec2-subnet-assignipv6addressoncreation
+# Type: boolean
+# Optional
+#assignIpv6AddressOnCreation: false
+
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html#cfn-ec2-subnet-availabilityzone
+# Type: string
+# Optional
+#availabilityZone: ''
+
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html#cfn-ec2-subnet-ipv6cidrblock
+# Type: string
+# Optional
+#ipv6CidrBlock: ''
+
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html#cfn-ec2-subnet-mappubliciponlaunch
+# Type: boolean
+# Optional
+#mapPublicIpOnLaunch: false
+
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html#cfn-ec2-subnet-tags
+# Type: list
+# Optional
+tags:
+  -
+    # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html#cfn-resource-tags-key
+    # Type: string
+    # Required
+    key: 'kubernetes.io/role/elb'
+
+    # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html#cfn-resource-tags-value
+    # Type: string
+    # Required
+    value: '1'

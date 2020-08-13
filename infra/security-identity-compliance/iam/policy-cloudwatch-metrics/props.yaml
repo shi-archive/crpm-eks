@@ -1,0 +1,32 @@
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html#cfn-iam-policy-policydocument
+# Type: object
+# Required
+policyDocument:
+  Version: 2012-10-17
+  Statement:
+    - Effect: Allow
+      Action: 'cloudwatch:PutMetricData'
+      Resource: '*'
+
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html#cfn-iam-policy-policyname
+# Type: string
+# Required
+#policyName: ''
+
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html#cfn-iam-policy-groups
+# Type: list
+# Optional
+#groups:
+#  -
+
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html#cfn-iam-policy-roles
+# Type: list
+# Optional
+#roles:
+#  -
+
+# Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html#cfn-iam-policy-users
+# Type: list
+# Optional
+#users:
+#  -

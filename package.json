@@ -1,0 +1,35 @@
+{
+  "name": "eks-fargate",
+  "version": "1.0.0",
+  "description": "Run an EKS cluster on Fargate",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "SHI International Corp.",
+    "url": "https://www.shi.com",
+    "organization": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/cloud9-bill-kerr.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "update-dependencies": "ncu -u"
+  },
+  "devDependencies": {
+    "@types/node": "~14.0.27",
+    "npm-check-updates": "~7.1.0",
+    "typescript": "~3.9.7"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-cloud9": "~1.57.0",
+    "@aws-cdk/aws-cloudformation": "~1.57.0",
+    "@aws-cdk/aws-lambda": "~1.57.0",
+    "@aws-cdk/core": "~1.57.0",
+    "@types/js-yaml": "~3.12.5",
+    "aws-cdk": "~1.57.0",
+    "crpm": "~1.13.0",
+    "js-yaml": "~3.14.0"
+  }
+}
