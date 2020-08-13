@@ -5,7 +5,7 @@ Create an EKS cluster running on Fargate, and an IDE that can be used to run kub
 ## Create Stacks
 
 ```bash
-npm uninstall -g aws-cdk
+npm uninstall -g cdk
 npm install -g aws-cdk@1.57.0 crpm@1.13.0
 npm install
 npm run build
