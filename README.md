@@ -1,30 +1,19 @@
-# EKS on Fargate
+# EKS
 
-Create an EKS cluster running on Fargate, and an IDE that can be used to run kubectl commands.
+Create an EKS cluster, and an IDE that can be used to run kubectl commands.
 
 ## Create Stacks
 
 ```bash
 npm uninstall -g cdk
-npm install -g aws-cdk@1.57.0 crpm@1.13.0
-npm install
-npm run build
+npm install -g aws-cdk@1.57.0 crpm@2.0.0
+#npm install
+#npm run build
 
-# EKS Management Role
+# Deploy the EKS management role CloudFormation stack
 # This role is used to create the EKS cluster, and it is attached to the IDE to access the cluster
 
-# Synthesize the CloudFormation template stack.template.json
-crpm synth infra/security-identity-compliance/iam/role-manage
-
-# Start creating the CloudFormation stack
-aws cloudformation create-stack \
-    --stack-name eks-fargate-management-role \
-    --template-body file://infra/security-identity-compliance/iam/role-manage/stack.template.json \
-    --capabilities CAPABILITY_NAMED_IAM
-
-# Wait for the stack to be created
-aws cloudformation wait stack-create-complete \
-    --stack-name eks-fargate-management-role
+cdk deploy RoleStack
 
 # EKS Cluster
 

@@ -1,7 +1,12 @@
-cdk.out
-manifest.json
-stack*.template.json
-template.d.ts
-template.js
-tree.json
+*.js
+!res/**/index.js
+!jest.config.js
+*.d.ts
 node_modules
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+# Parcel default cache directory
+.parcel-cache

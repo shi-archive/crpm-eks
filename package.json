@@ -1,7 +1,7 @@
 {
-  "name": "eks-fargate",
+  "name": "crpm-eks",
   "version": "1.0.0",
-  "description": "Run an EKS cluster on Fargate",
+  "description": "Create an EKS cluster from property files",
   "license": "Apache-2.0",
   "author": {
     "name": "SHI International Corp.",
@@ -10,26 +10,32 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/cloud9-bill-kerr.git"
+    "url": "https://github.com/mscribe/crpm-eks.git"
+  },
+  "bin": {
+    "crpm-eks": "bin/crpm-eks.js"
   },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk",
     "update-dependencies": "ncu -u"
   },
   "devDependencies": {
-    "@types/node": "~14.0.27",
-    "npm-check-updates": "~7.1.0",
+    "@aws-cdk/assert": "^1.57.0",
+    "@types/jest": "~26.0.10",
+    "@types/node": "~14.6.0",
+    "jest": "~26.4.0",
+    "npm-check-updates": "~7.1.1",
+    "ts-jest": "~26.2.0",
+    "aws-cdk": "^1.57.0",
+    "ts-node": "~8.10.2",
     "typescript": "~3.9.7"
   },
   "dependencies": {
-    "@aws-cdk/aws-cloud9": "~1.57.0",
-    "@aws-cdk/aws-cloudformation": "~1.57.0",
-    "@aws-cdk/aws-lambda": "~1.57.0",
-    "@aws-cdk/core": "~1.57.0",
-    "@types/js-yaml": "~3.12.5",
-    "aws-cdk": "~1.57.0",
-    "crpm": "~1.13.0",
-    "js-yaml": "~3.14.0"
+    "@aws-cdk/core": "^1.57.0",
+    "source-map-support": "~0.5.19",
+    "crpm": "^2.0.0"
   }
 }
