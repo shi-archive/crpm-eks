@@ -1,60 +1,38 @@
 # EKS
 
-Create an EKS cluster, and an IDE that can be used to run kubectl commands.
+Deploy an EKS cluster and an IDE that can be used to run kubectl commands.
 
-## Create Stacks
+## Deploy Stacks
 
 ```bash
 npm uninstall -g cdk
-npm install -g aws-cdk@1.57.0 crpm@2.0.0
-#npm install
-#npm run build
+npm i -g aws-cdk@1.57.0 crpm@2.0.0
+npm i
+
+# Clone the infrastructure code
+git clone https://github.com/mscribe/crpm-eks
+
+# Change directory
+cd crpm-eks
 
 # Deploy the EKS management role CloudFormation stack
 # This role is used to create the EKS cluster, and it is attached to the IDE to access the cluster
-
 cdk deploy RoleStack
 
-# EKS Cluster
+# Get the ARN of the management role deployed above
+export MANAGEMENT_ROLE_ARN=`aws cloudformation describe-stacks --stack-name RoleStack --query "Stacks[0].Outputs[0].OutputValue" --output text`
 
-# Synthesize the CloudFormation template stack.template.json
-crpm synth infra/compute/eks/cluster
+# Deploy the EKS cluster in a new VPC using the management role deployed above
+cdk deploy EksStack -r $MANAGEMENT_ROLE_ARN
 
-# Get the arn of the management role created above
-export MANAGEMENT_ROLE_ARN=`aws cloudformation describe-stacks --stack-name eks-fargate-management-role --query "Stacks[0].Outputs[0].OutputValue" --output text`
-
-# Start creating the CloudFormation stack
-aws cloudformation create-stack \
-    --stack-name eks-fargate-cluster \
-    --template-body file://infra/compute/eks/cluster/stack.template.json \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --role-arn $MANAGEMENT_ROLE_ARN
-
-# Wait for the stack to be created
-aws cloudformation wait stack-create-complete \
-    --stack-name eks-fargate-cluster
-
-# IDE
-
-# Synthesize the CloudFormation template stack.template.json
-crpm synth infra/developer-tools/cloud9/environment-ec2
-
-# Get the name of the management role created above
+# Get the names of the management role and cluster created above
 export MANAGEMENT_ROLE_NAME=`aws cloudformation describe-stacks --stack-name eks-fargate-management-role --query "Stacks[0].Outputs[1].OutputValue" --output text`
+export CLUSTER_NAME=`aws cloudformation describe-stacks --stack-name EksStack --query "Stacks[0].Outputs[0].OutputValue" --output text`
 
-# Get the name of the cluster created above
-export CLUSTER_NAME=`aws cloudformation describe-stacks --stack-name eks-fargate-cluster --query "Stacks[0].Outputs[0].OutputValue" --output text`
-
-# Start creating the CloudFormation stack
-aws cloudformation create-stack \
-    --stack-name eks-fargate-ide \
-    --template-body file://infra/developer-tools/cloud9/environment-ec2/stack.template.json \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --parameters ParameterKey=ManagementRoleName,ParameterValue=$MANAGEMENT_ROLE_NAME ParameterKey=ClusterName,ParameterValue=$CLUSTER_NAME
-
-# Wait for the stack to be created
-aws cloudformation wait stack-create-complete \
-    --stack-name eks-fargate-ide
+# Deploy the Cloud9 IDE with kubectl ready to use
+cdk deploy Cloud9Stack \
+  --parameters ManagementRoleName=$MANAGEMENT_ROLE_NAME \
+  --parameters ClusterName=$CLUSTER_NAME
 ```
 
 ## Cloud9 Usage

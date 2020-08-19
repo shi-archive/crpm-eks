@@ -6,6 +6,6 @@ import { EksStack } from '../lib/eks-stack';
 import { Cloud9Stack } from '../lib/cloud9-stack';
 
 const app = new cdk.App();
-new RoleStack(app, 'RoleStack');
-new EksStack(app, 'EksStack');
-new Cloud9Stack(app, 'Cloud9Stack');
+new RoleStack(app, 'RoleStack', { stackName: 'eks-role' });
+new EksStack(app, 'EksStack', { stackName: 'eks-cluster' });
+new Cloud9Stack(app, 'Cloud9Stack', { stackName: 'eks-ide' });
