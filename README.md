@@ -20,14 +20,14 @@ cd crpm-eks
 cdk deploy RoleStack
 
 # Get the ARN of the management role deployed above
-export MANAGEMENT_ROLE_ARN=`aws cloudformation describe-stacks --stack-name RoleStack --query "Stacks[0].Outputs[0].OutputValue" --output text`
+export MANAGEMENT_ROLE_ARN=`aws cloudformation describe-stacks --stack-name eks-role --query "Stacks[0].Outputs[0].OutputValue" --output text`
 
 # Deploy the EKS cluster in a new VPC using the management role deployed above
 cdk deploy EksStack -r $MANAGEMENT_ROLE_ARN
 
 # Get the names of the management role and cluster created above
-export MANAGEMENT_ROLE_NAME=`aws cloudformation describe-stacks --stack-name eks-fargate-management-role --query "Stacks[0].Outputs[1].OutputValue" --output text`
-export CLUSTER_NAME=`aws cloudformation describe-stacks --stack-name EksStack --query "Stacks[0].Outputs[0].OutputValue" --output text`
+export MANAGEMENT_ROLE_NAME=`aws cloudformation describe-stacks --stack-name eks-role --query "Stacks[0].Outputs[1].OutputValue" --output text`
+export CLUSTER_NAME=`aws cloudformation describe-stacks --stack-name eks-cluster --query "Stacks[0].Outputs[0].OutputValue" --output text`
 
 # Deploy the Cloud9 IDE with kubectl ready to use
 cdk deploy Cloud9Stack \
