@@ -70,7 +70,7 @@ export FARGATE_POD_EXECUTION_POD_ROLE_ARN=`aws cloudformation describe-stacks --
 
 # Create Fargate profile to target CoreDNS pods
 aws eks create-fargate-profile \
-    --fargate-profile-name profile-eks-fargate-cluster-3 \
+    --fargate-profile-name profile-eks-fargate-cluster \
     --cluster-name eks-fargate-cluster \
     --pod-execution-role-arn $FARGATE_POD_EXECUTION_POD_ROLE_ARN \
     --selectors namespace=kube-system,labels={k8s-app=kube-dns}
