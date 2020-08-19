@@ -37,7 +37,7 @@ cdk deploy Cloud9Stack \
 
 ## Cloud9 Usage
 
-1.  In the AWS Console, open the Cloud9 environment created above (eks-fargate-ide).
+1.  In the AWS Console, open the Cloud9 environment created above (eks-ide).
 
 2.  Once the Cloud9 environment is running in your browser, disable AWS managed temporary credentials.
 
@@ -65,9 +65,8 @@ k get svc
 5.  Configure EKS to *only* run pods in Fargate.
 
 ```bash
-
 # Get the arn of the Fargate pod execution role created above
-export FARGATE_POD_EXECUTION_POD_ROLE_ARN=`aws cloudformation describe-stacks --stack-name eks-fargate-cluster --query "Stacks[0].Outputs[1].OutputValue" --output text`
+export FARGATE_POD_EXECUTION_POD_ROLE_ARN=`aws cloudformation describe-stacks --stack-name eks-cluster --query "Stacks[0].Outputs[1].OutputValue" --output text`
 
 # Create Fargate profile to target CoreDNS pods
 aws eks create-fargate-profile \
@@ -81,25 +80,17 @@ k patch deployment coredns \
         -n kube-system \
         --type json \
         -p='[{"op": "remove", "path": "/spec/template/metadata/annotations/eks.amazonaws.com~1compute-type"}]'
-
 ```
 
-## Terminate Stacks
+## Destroy Stacks
 
 ```bash
-# Delete the cluster stack
-aws cloudformation delete-stack \
-    --stack-name eks-fargate-cluster
+# Destroy the cluster
+cdk destroy eks-cluster
 
-# Delete the IDE stack
-aws cloudformation delete-stack \
-    --stack-name eks-fargate-ide
+# Destroy the IDE
+cdk destroy eks-ide
 
-# Wait for the cluster stack to be deleted
-aws cloudformation wait stack-delete-complete \
-    --stack-name eks-fargate-cluster
-
-# Delete the management role stack
-aws cloudformation delete-stack \
-    --stack-name eks-fargate-management-role
+# Destroy the management role
+cdk destroy eks-role
 ```
