@@ -18,14 +18,14 @@ export class Cloud9Stack extends cdk.Stack {
     super(scope, id, props);
     
     // Cloud9 Environment
-    const cloud9Props: crpm.Writeable<cloud9.CfnEnvironmentEC2Props> = crpm.load(
+    const cloud9Props = crpm.load<cloud9.CfnEnvironmentEC2Props>(
       `${__dirname}/../res/developer-tools/cloud9/environment-ec2/props.yaml`
     );
     cloud9Props.name = cdk.Aws.STACK_NAME;
     const c9 = new cloud9.CfnEnvironmentEC2(this, 'EnvironmentEC2', cloud9Props);
     
     // Instance Profile
-    const instanceProfileProps: crpm.Writeable<iam.CfnInstanceProfileProps> = crpm.load(
+    const instanceProfileProps = crpm.load<iam.CfnInstanceProfileProps>(
       `${__dirname}/../res/security-identity-compliance/iam/instance-profile-ide/props.yaml`
     );
     instanceProfileProps.roles = [props.cfnRoleName];
@@ -34,7 +34,7 @@ export class Cloud9Stack extends cdk.Stack {
     
     // Systems Manager Document
     const ssmDocDir = `${__dirname}/../res/management-governance/ssm/document-configure-cloud9`;
-    const ssmDocProps: crpm.Writeable<ssm.CfnDocumentProps> = crpm.load(`${ssmDocDir}/props.yaml`);
+    const ssmDocProps = crpm.load<ssm.CfnDocumentProps>(`${ssmDocDir}/props.yaml`);
     let ssmDocContent = fs.readFileSync(`${ssmDocDir}/content.yaml`, 'utf8');
     ssmDocContent = ssmDocContent.replace(/\$REGION/g, this.region);
     ssmDocContent = ssmDocContent.replace(/\$CLUSTER_NAME/g, props.clusterName);
@@ -43,7 +43,7 @@ export class Cloud9Stack extends cdk.Stack {
     const ssmDoc = new ssm.CfnDocument(this, "Document", ssmDocProps);
     
     // Lambda Role
-    const lambdaRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.load(
+    const lambdaRoleProps = crpm.load<iam.CfnRoleProps>(
       `${__dirname}/../res/security-identity-compliance/iam/role-lambda/props.yaml`
     );
     lambdaRoleProps.roleName = `lambda-${cdk.Aws.STACK_NAME}`;
@@ -51,7 +51,7 @@ export class Cloud9Stack extends cdk.Stack {
     
     // Lambda Function
     const fnDir = `${__dirname}/../res/compute/lambda/function-custom-resource-ide`;
-    const fnProps: crpm.Writeable<lambda.CfnFunctionProps> = crpm.load(`${fnDir}/props.yaml`);
+    const fnProps = crpm.load<lambda.CfnFunctionProps>(`${fnDir}/props.yaml`);
     fnProps.code = {
       zipFile: fs.readFileSync(`${fnDir}/index.js`, 'utf8')
     }
@@ -60,7 +60,7 @@ export class Cloud9Stack extends cdk.Stack {
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
     
     // Custom Resource
-    const crProps: crpm.Writeable<cfn.CfnCustomResourceProps> = crpm.load(
+    const crProps = crpm.load<cfn.CfnCustomResourceProps>(
       `${__dirname}/../res/management-governance/cloudformation/custom-resource-ide/props.yaml`
     );
     crProps.serviceToken = fn.attrArn;

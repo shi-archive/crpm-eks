@@ -36,6 +36,6 @@
   "dependencies": {
     "@aws-cdk/core": "^1.57.0",
     "source-map-support": "~0.5.19",
-    "crpm": "^2.0.0"
+    "crpm": "^2.1.0"
   }
 }

@@ -9,7 +9,7 @@ export class RoleStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
-    const roleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.load(
+    const roleProps = crpm.load<iam.CfnRoleProps>(
       `${__dirname}/../res/security-identity-compliance/iam/role-manage/props.yaml`
     );
     roleProps.roleName = cdk.Aws.STACK_NAME;
