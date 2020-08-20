@@ -1,0 +1,1 @@
+aws eks update-kubeconfig --name crpmeks --region us-east-2 --role-arn arn:aws:iam::12345678:role/ClusterStack-us-east-2-AdminRole38563C57-14FLI2EDV4QN
