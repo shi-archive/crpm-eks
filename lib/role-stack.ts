@@ -16,7 +16,5 @@ export class RoleStack extends cdk.Stack {
     const role = new iam.CfnRole(this, 'Role', roleProps);
     this.roleName = role.ref;
     this.roleArn = role.attrArn;
-    
-    new cdk.CfnOutput(this, 'Arn', {value: role.attrArn});
   }
 }

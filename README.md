@@ -19,11 +19,10 @@ cd crpm-eks
 # This role is used to create the EKS cluster, and it is attached to the IDE to access the cluster
 cdk deploy RoleStack
 
-# Get the ARN of the management role deployed above (it's also visible in the deploy output)
-export MANAGEMENT_ROLE_ARN=`aws cloudformation describe-stacks --stack-name eks-role --query "Stacks[0].Outputs[0].OutputValue" --output text`
-
-# Deploy the EKS cluster in a new VPC using the management role deployed above
-cdk deploy EksStack -r $MANAGEMENT_ROLE_ARN
+# Copy the ARN of the role deployed above.  It's visible in the deploy **Outputs** and looks like
+# arn:aws:iam::123:role/eks-role.  Then, deploy the EKS cluster in a new VPC using that role by
+# passing in the role ARN (ex. cdk deploy EksStack -r arn:aws:iam::123:role/eks-role).
+cdk deploy EksStack -r 
 
 # Deploy the Cloud9 IDE with kubectl ready to use
 cdk deploy Cloud9Stack

@@ -261,9 +261,6 @@ export class EksStack extends cdk.Stack {
     );
     const fargatePodExecutionRole = new iam.CfnRole(this, 'FargatePodExecutionRole', fargatePodExecutionRoleProps);
     
-    // Cluster Name Output
-    new cdk.CfnOutput(this, 'ClusterName', {value: cluster.ref});
-    
     // Fargate Pod Execution Role ARN Output
     new cdk.CfnOutput(this, 'FargatePodExecutionRoleArn', {value: fargatePodExecutionRole.attrArn});
     
