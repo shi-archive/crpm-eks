@@ -60,14 +60,13 @@ k get svc
 1.  Configure EKS to *only* run pods in Fargate.
 
 ```bash
-# Get the arn of the Fargate pod execution role created above
-export FARGATE_POD_EXECUTION_POD_ROLE_ARN=`aws cloudformation describe-stacks --stack-name eks-cluster --query "Stacks[0].Outputs[1].OutputValue" --output text`
-
-# Create Fargate profile to target CoreDNS pods
+# Copy the ARN of the Fargate pod execution role deployed above in EksStack.  It's visible in the
+# deploy **Outputs** and looks like arn:aws:iam::123:role/eks-role.  Then, create the Fargate profile
+# to target CoreDNS pods using that role by passing in the role ARN with --pod-execution-role-arn.
 aws eks create-fargate-profile \
     --fargate-profile-name profile-eks-fargate-cluster \
     --cluster-name eks-fargate-cluster \
-    --pod-execution-role-arn $FARGATE_POD_EXECUTION_POD_ROLE_ARN \
+    --pod-execution-role-arn  \
     --selectors namespace=kube-system,labels={k8s-app=kube-dns}
 
 # Remove eks.amazonaws.com/compute-type : ec2 annotation from CoreDNS pods
