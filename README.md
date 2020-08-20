@@ -19,20 +19,14 @@ cd crpm-eks
 # This role is used to create the EKS cluster, and it is attached to the IDE to access the cluster
 cdk deploy RoleStack
 
-# Get the ARN of the management role deployed above
+# Get the ARN of the management role deployed above (it's also visible in the deploy output)
 export MANAGEMENT_ROLE_ARN=`aws cloudformation describe-stacks --stack-name eks-role --query "Stacks[0].Outputs[0].OutputValue" --output text`
 
 # Deploy the EKS cluster in a new VPC using the management role deployed above
 cdk deploy EksStack -r $MANAGEMENT_ROLE_ARN
 
-# Get the names of the management role and cluster created above
-export MANAGEMENT_ROLE_NAME=`aws cloudformation describe-stacks --stack-name eks-role --query "Stacks[0].Outputs[1].OutputValue" --output text`
-export CLUSTER_NAME=`aws cloudformation describe-stacks --stack-name eks-cluster --query "Stacks[0].Outputs[0].OutputValue" --output text`
-
 # Deploy the Cloud9 IDE with kubectl ready to use
-cdk deploy Cloud9Stack \
-  --parameters ManagementRoleName=$MANAGEMENT_ROLE_NAME \
-  --parameters ClusterName=$CLUSTER_NAME
+cdk deploy Cloud9Stack
 ```
 
 ## Cloud9 Usage
@@ -62,7 +56,9 @@ cdk deploy Cloud9Stack \
 k get svc
 ```
 
-5.  Configure EKS to *only* run pods in Fargate.
+## Configure Fargate
+
+1.  Configure EKS to *only* run pods in Fargate.
 
 ```bash
 # Get the arn of the Fargate pod execution role created above
@@ -85,12 +81,6 @@ k patch deployment coredns \
 ## Destroy Stacks
 
 ```bash
-# Destroy the cluster
-cdk destroy eks-cluster
-
-# Destroy the IDE
-cdk destroy eks-ide
-
-# Destroy the management role
-cdk destroy eks-role
+# Destroy the cluster, IDE and role
+cdk destroy EksStack Cloud9Stack RoleStack
 ```

@@ -8,19 +8,14 @@ import * as crpm from 'crpm';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
+interface Cloud9StackProps extends cdk.StackProps {
+  cfnRoleName: string;
+  clusterName: string;
+}
+
 export class Cloud9Stack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.Construct, id: string, props: Cloud9StackProps) {
     super(scope, id, props);
-    
-    // Management Role Name Parameter
-    const manageRoleName = new cdk.CfnParameter(this, 'ManagementRoleName', {
-      type: 'String'
-    });
-    
-    // Cluster Name Parameter
-    const clusterName = new cdk.CfnParameter(this, 'ClusterName', {
-      type: 'String'
-    });
     
     // Cloud9 Environment
     const cloud9Props: crpm.Writeable<cloud9.CfnEnvironmentEC2Props> = crpm.load(
@@ -33,7 +28,7 @@ export class Cloud9Stack extends cdk.Stack {
     const instanceProfileProps: crpm.Writeable<iam.CfnInstanceProfileProps> = crpm.load(
       `${__dirname}/../res/security-identity-compliance/iam/instance-profile-ide/props.yaml`
     );
-    instanceProfileProps.roles = [manageRoleName.valueAsString];
+    instanceProfileProps.roles = [props.cfnRoleName];
     instanceProfileProps.instanceProfileName = cdk.Aws.STACK_NAME;
     const instanceProfile = new iam.CfnInstanceProfile(this, "InstanceProfile", instanceProfileProps);
     
@@ -42,7 +37,7 @@ export class Cloud9Stack extends cdk.Stack {
     const ssmDocProps: crpm.Writeable<ssm.CfnDocumentProps> = crpm.load(`${ssmDocDir}/props.yaml`);
     let ssmDocContent = fs.readFileSync(`${ssmDocDir}/content.yaml`, 'utf8');
     ssmDocContent = ssmDocContent.replace(/\$REGION/g, this.region);
-    ssmDocContent = ssmDocContent.replace(/\$CLUSTER_NAME/g, clusterName.valueAsString);
+    ssmDocContent = ssmDocContent.replace(/\$CLUSTER_NAME/g, props.clusterName);
     ssmDocProps.content = yaml.safeLoad(ssmDocContent);
     ssmDocProps.name = `${cdk.Aws.STACK_NAME}-configure-cloud9`;
     const ssmDoc = new ssm.CfnDocument(this, "Document", ssmDocProps);

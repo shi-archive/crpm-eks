@@ -4,8 +4,14 @@ import * as eks from '@aws-cdk/aws-eks';
 import * as iam from '@aws-cdk/aws-iam';
 import * as crpm from 'crpm';
 
+interface EksStackProps extends cdk.StackProps {
+  cfnRoleArn: string;
+}
+
 export class EksStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  readonly clusterName: string;
+  
+  constructor(scope: cdk.Construct, id: string, props: EksStackProps) {
     super(scope, id, props);
     
     // VPC
@@ -235,16 +241,19 @@ export class EksStack extends cdk.Stack {
     eksProps.roleArn = serviceRole.attrArn;
     eksProps.name = cdk.Aws.STACK_NAME;
     const cluster = new eks.CfnCluster(this, 'ControlPlane', eksProps);
+    this.clusterName = cluster.ref;
     
-    const roleNodegroupProps: crpm.Writeable<iam.CfnRoleProps> = crpm.load(`${__dirname}/../res/security-identity-compliance/iam/role-nodegroup/props.yaml`);
-    const roleNodegroup = new iam.CfnRole(this, 'Role', roleNodegroupProps);
+    // Nodegroup Role
+    const nodegroupRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.load(`${__dirname}/../res/security-identity-compliance/iam/role-nodegroup/props.yaml`);
+    const nodegroupRole = new iam.CfnRole(this, 'Role', nodegroupRoleProps);
 
+    // Nodegroup
     const nodegroupProps: crpm.Writeable<eks.CfnNodegroupProps> = crpm.load(`${__dirname}/../res/compute/eks/nodegroup/props.yaml`);
     nodegroupProps.clusterName = cluster.ref;
-    nodegroupProps.nodeRole = roleNodegroup.ref;
+    nodegroupProps.nodeRole = nodegroupRole.attrArn;
     nodegroupProps.subnets = [privateSubnet1A.ref, privateSubnet1B.ref];
     nodegroupProps.nodegroupName = cdk.Aws.STACK_NAME;
-    const nodegroup = new eks.CfnNodegroup(this, 'Nodegroup', nodegroupProps);
+    new eks.CfnNodegroup(this, 'Nodegroup', nodegroupProps);
 
     // Fargate Pod Execution Role
     const fargatePodExecutionRoleProps: crpm.Writeable<iam.CfnRoleProps> = crpm.load(
@@ -253,9 +262,21 @@ export class EksStack extends cdk.Stack {
     const fargatePodExecutionRole = new iam.CfnRole(this, 'FargatePodExecutionRole', fargatePodExecutionRoleProps);
     
     // Cluster Name Output
-    new cdk.CfnOutput(this, 'Name', {value: cluster.ref});
+    new cdk.CfnOutput(this, 'ClusterName', {value: cluster.ref});
     
     // Fargate Pod Execution Role ARN Output
     new cdk.CfnOutput(this, 'FargatePodExecutionRoleArn', {value: fargatePodExecutionRole.attrArn});
+    
+    // Update kubeconfig Command
+    new cdk.CfnOutput(this, 'UpdateKubeConfigCommand', {value: cdk.Fn.join(' ',
+      [
+        'aws eks update-kubeconfig --name',
+        cluster.ref,
+        '--region',
+        this.region,
+        '--role-arn',
+        props.cfnRoleArn
+      ]
+    )});
   }
 }
