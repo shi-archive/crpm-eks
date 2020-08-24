@@ -251,7 +251,7 @@ stages:
           OutputFileName: 'create-change-set/pipeline.json'
 #          RoleArn: ''
 #          StackName: ''
-          TemplatePath: 'Package::cdk.out/cicd.template.json'
+          TemplatePath: 'Package::cdk.out/eks.template.json'
 
         # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-codepipeline-pipeline-stages-actions.html#cfn-codepipeline-pipeline-stages-actions-inputartifacts
         # Type: list
@@ -437,7 +437,7 @@ stages:
           OutputFileName: 'execute-change-set/pipeline.json'
 #          RoleArn: ''
 #          StackName: ""
-          TemplatePath: 'Package::cdk.out/cicd.template.json'
+          TemplatePath: 'Package::cdk.out/eks.template.json'
 
         # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-codepipeline-pipeline-stages-actions.html#cfn-codepipeline-pipeline-stages-actions-inputartifacts
         # Type: list
