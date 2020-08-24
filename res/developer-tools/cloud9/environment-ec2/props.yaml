@@ -11,7 +11,7 @@ instanceType: 't2.micro'
 # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-description
 # Type: string
 # Optional
-description: 'kubectl is installed and configured to work with EKS on Fargate'
+description: 'kubectl is configured with access to the EKS cluster and infrastructure code is checked out'
 
 # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-name
 # Type: string

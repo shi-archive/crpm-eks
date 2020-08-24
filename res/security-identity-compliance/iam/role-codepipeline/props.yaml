@@ -6,7 +6,7 @@ assumeRolePolicyDocument:
   Statement:
     - Effect: Allow
       Principal:
-        Service: lambda.amazonaws.com
+        Service: codepipeline.amazonaws.com
       Action:
         - sts:AssumeRole
 
@@ -49,19 +49,27 @@ policies:
       Statement:
         - Effect: Allow
           Action:
-            - 'ec2:AssociateIamInstanceProfile'
-            - 'ec2:DescribeInstances'
-            - 'ec2:RebootInstances'
+            - 'cloudformation:CreateStack'
+            - 'cloudformation:DeleteStack'
+            - 'cloudformation:DescribeStacks'
+            - 'cloudformation:UpdateStack'
+            - 'cloudformation:CreateChangeSet'
+            - 'cloudformation:DeleteChangeSet'
+            - 'cloudformation:DescribeChangeSet'
+            - 'cloudformation:ExecuteChangeSet'
+            - 'cloudformation:SetStackPolicy'
+            - 'cloudformation:ValidateTemplate'
+            - 'codebuild:BatchGetBuilds'
+            - 'codebuild:StartBuild'
+            - 'codecommit:GetBranch'
+            - 'codecommit:GetCommit'
+            - 'codecommit:UploadArchive'
+            - 'codecommit:GetUploadArchiveStatus'
+            - 'codecommit:CancelUploadArchive'
             - 'iam:PassRole'
-            - 'logs:CreateLogGroup'
-            - 'logs:CreateLogStream'
-            - 'logs:PutLogEvents'
-            - 's3:DeleteObject'
-            - 's3:DeleteObjectVersion'
-            - 's3:ListBucketVersions'
+            - 's3:GetObject'
             - 's3:PutObject'
-            - 'ssm:DescribeInstanceInformation'
-            - 'ssm:SendCommand'
+            - 'sns:Publish'
           Resource: '*'
 
     # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname

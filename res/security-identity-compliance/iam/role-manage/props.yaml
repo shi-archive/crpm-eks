@@ -22,7 +22,7 @@ description: 'Used by CloudFormation to create an EKS cluster and used by an EC2
 # Optional
 managedPolicyArns:
   - arn:aws:iam::aws:policy/AdministratorAccess
-  - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+  - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
 
 # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-maxsessionduration
 # Type: number
@@ -52,7 +52,15 @@ policies:
       Statement:
         - Effect: Allow
           Action:
+            - 'codecommit:*'
+            - 'codebuild:*'
+            - 'codepipeline:*'
             - 'eks:DescribeCluster'
+            - 'events:*'
+            - 'iam:*'
+            - 'lambda:*'
+            - 's3:*'
+            - 'sns:*'
           Resource: '*'
 
     # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname

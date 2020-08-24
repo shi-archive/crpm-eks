@@ -6,7 +6,7 @@ assumeRolePolicyDocument:
   Statement:
     - Effect: Allow
       Principal:
-        Service: lambda.amazonaws.com
+        Service: codebuild.amazonaws.com
       Action:
         - sts:AssumeRole
 
@@ -47,22 +47,15 @@ policies:
     policyDocument:
       Version: 2012-10-17
       Statement:
-        - Effect: Allow
-          Action:
-            - 'ec2:AssociateIamInstanceProfile'
-            - 'ec2:DescribeInstances'
-            - 'ec2:RebootInstances'
-            - 'iam:PassRole'
+        - Action:
+            - 'cloudformation:ValidateTemplate'
             - 'logs:CreateLogGroup'
             - 'logs:CreateLogStream'
             - 'logs:PutLogEvents'
-            - 's3:DeleteObject'
-            - 's3:DeleteObjectVersion'
-            - 's3:ListBucketVersions'
+            - 's3:GetObject'
             - 's3:PutObject'
-            - 'ssm:DescribeInstanceInformation'
-            - 'ssm:SendCommand'
           Resource: '*'
+          Effect: Allow
 
     # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
     # Type: string

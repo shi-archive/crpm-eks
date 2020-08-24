@@ -5,6 +5,9 @@ mainSteps:
     name: Install
     inputs:
       runCommand:
+        # Install compatible versions of AWS CDK & CRPM
+        - runuser -l ec2-user -c 'npm uninstall -g cdk'
+        - runuser -l ec2-user -c 'npm install -g aws-cdk@1.57.0 crpm@2.1.0 typescript'
         # Upgrade the AWS CLI to the latest version
         - runuser -l ec2-user -c 'pip2 --disable-pip-version-check install --user --upgrade awscli'
         # Install kubectl
@@ -13,4 +16,4 @@ mainSteps:
         - runuser -l ec2-user -c 'echo "alias k=\"kubectl\"" >> ~/.bashrc'
         # Update ~/.kube/config
         - runuser -l ec2-user -c 'aws --region $REGION eks update-kubeconfig --name $CLUSTER_NAME'
-      timeoutSeconds: 300
+      timeoutSeconds: 600

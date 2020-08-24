@@ -8,13 +8,15 @@ import * as crpm from 'crpm';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
-interface Cloud9StackProps extends cdk.StackProps {
+interface IdeStackProps extends cdk.StackProps {
   cfnRoleName: string;
   clusterName: string;
+  lambdaRoleArn: string;
+  repoName: string;
 }
 
-export class Cloud9Stack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: Cloud9StackProps) {
+export class IdeStack extends cdk.Stack {
+  constructor(scope: cdk.Construct, id: string, props: IdeStackProps) {
     super(scope, id, props);
     
     // Cloud9 Environment
@@ -22,6 +24,17 @@ export class Cloud9Stack extends cdk.Stack {
       `${__dirname}/../res/developer-tools/cloud9/environment-ec2/props.yaml`
     );
     cloud9Props.name = cdk.Aws.STACK_NAME;
+    cloud9Props.repositories = [{
+      pathComponent: '/crpm-eks',
+      repositoryUrl: cdk.Fn.join('',
+        [
+          'https://git-codecommit.',
+          this.region,
+          '.amazonaws.com/v1/repos/',
+          props.repoName
+        ]
+      )
+    }];
     const c9 = new cloud9.CfnEnvironmentEC2(this, 'EnvironmentEC2', cloud9Props);
     
     // Instance Profile
@@ -42,26 +55,19 @@ export class Cloud9Stack extends cdk.Stack {
     ssmDocProps.name = `${cdk.Aws.STACK_NAME}-configure-cloud9`;
     const ssmDoc = new ssm.CfnDocument(this, "Document", ssmDocProps);
     
-    // Lambda Role
-    const lambdaRoleProps = crpm.load<iam.CfnRoleProps>(
-      `${__dirname}/../res/security-identity-compliance/iam/role-lambda/props.yaml`
-    );
-    lambdaRoleProps.roleName = `lambda-${cdk.Aws.STACK_NAME}`;
-    const lambdaRole = new iam.CfnRole(this, 'LambdaRole', lambdaRoleProps);
-    
     // Lambda Function
     const fnDir = `${__dirname}/../res/compute/lambda/function-custom-resource-ide`;
     const fnProps = crpm.load<lambda.CfnFunctionProps>(`${fnDir}/props.yaml`);
     fnProps.code = {
       zipFile: fs.readFileSync(`${fnDir}/index.js`, 'utf8')
     }
-    fnProps.role = lambdaRole.attrArn;
+    fnProps.role = props.lambdaRoleArn;
     fnProps.functionName = `${cdk.Aws.STACK_NAME}-custom-resource`;
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
     
     // Custom Resource
     const crProps = crpm.load<cfn.CfnCustomResourceProps>(
-      `${__dirname}/../res/management-governance/cloudformation/custom-resource-ide/props.yaml`
+      `${__dirname}/../res/management-governance/cloudformation/custom-resource/props.yaml`
     );
     crProps.serviceToken = fn.attrArn;
     const cr = new cfn.CfnCustomResource(this, 'CustomResource', crProps);
