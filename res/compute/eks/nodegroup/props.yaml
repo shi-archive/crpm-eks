@@ -32,8 +32,8 @@ amiType: 'AL2_x86_64'
 # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-eks-nodegroup.html#cfn-eks-nodegroup-instancetypes
 # Type: list
 # Optional
-#instanceTypes:
-#  -
+instanceTypes:
+  - t3.small
 
 # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-eks-nodegroup.html#cfn-eks-nodegroup-labels
 # Type: object
