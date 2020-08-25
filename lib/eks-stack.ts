@@ -252,7 +252,6 @@ export class EksStack extends cdk.Stack {
     nodegroupProps.clusterName = cluster.ref;
     nodegroupProps.nodeRole = nodegroupRole.attrArn;
     nodegroupProps.subnets = [privateSubnet1A.ref, privateSubnet1B.ref];
-    nodegroupProps.nodegroupName = cdk.Aws.STACK_NAME;
     new eks.CfnNodegroup(this, 'Nodegroup', nodegroupProps);
 
     // Fargate Pod Execution Role

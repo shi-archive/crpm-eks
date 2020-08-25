@@ -17,15 +17,18 @@ cd crpm-eks
 
 # Deploy the EKS management role CloudFormation stack
 # This role is used to create the EKS cluster, and it is attached to the IDE to access the cluster
-cdk deploy RoleStack
+cdk deploy role
 
 # Copy the ARN of the role deployed above.  It's visible in the deploy **Outputs** and looks like
-# arn:aws:iam::123:role/eks-role.  Then, deploy the EKS cluster in a new VPC using that role by
-# passing in the role ARN (ex. cdk deploy EksStack -r arn:aws:iam::123:role/eks-role).
-cdk deploy EksStack -r 
+# arn:aws:iam::123:role/eks-role-us-east-1.  Then, deploy the EKS cluster in a new VPC using that
+# role by passing in the role ARN (ex. cdk deploy eks -r arn:aws:iam::123:role/eks-role-us-east-1).
+cdk deploy eks -r 
 
-# Deploy the Cloud9 IDE with kubectl ready to use
-cdk deploy Cloud9Stack
+# Deploy the infrastructure CI/CD
+cdk deploy cicd-infra
+
+# Deploy the Cloud9 IDE with kubectl ready to use and infrastructure code ready to edit
+cdk deploy ide
 ```
 
 ## Cloud9 Usage
@@ -79,6 +82,6 @@ k patch deployment coredns \
 ## Destroy Stacks
 
 ```bash
-# Destroy the cluster, IDE and role
-cdk destroy EksStack Cloud9Stack RoleStack
+# Destroy the IDE, CI/CD pipeline, cluster and role
+cdk destroy ide cicd-infra eks role
 ```
