@@ -12,7 +12,7 @@ export class RoleStack extends cdk.Stack {
     const roleProps = crpm.load<iam.CfnRoleProps>(
       `${__dirname}/../res/security-identity-compliance/iam/role-manage/props.yaml`
     );
-    roleProps.roleName = cdk.Aws.STACK_NAME;
+    roleProps.roleName = cdk.Fn.join('-', [cdk.Aws.STACK_NAME, this.region]);
     const role = new iam.CfnRole(this, 'Role', roleProps);
     this.roleName = role.ref;
     this.roleArn = role.attrArn;
