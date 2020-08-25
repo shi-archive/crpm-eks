@@ -12,6 +12,7 @@ import * as fs from 'fs';
 
 interface InfraCicdStackProps extends cdk.StackProps {
   cfnRoleArn: string;
+  eksStackName: string;
 }
 
 export class InfraCicdStack extends cdk.Stack {
@@ -105,9 +106,9 @@ export class InfraCicdStack extends cdk.Stack {
     stages[0].actions[0].configuration.RepositoryName = repo.attrName;
     stages[1].actions[0].configuration.ProjectName = project.ref;
     stages[2].actions[0].configuration.RoleArn = props.cfnRoleArn;
-    stages[2].actions[0].configuration.StackName = cdk.Aws.STACK_NAME;
+    stages[2].actions[0].configuration.StackName = props.eksStackName;
     stages[3].actions[0].configuration.RoleArn = props.cfnRoleArn;
-    stages[3].actions[0].configuration.StackName = cdk.Aws.STACK_NAME;
+    stages[3].actions[0].configuration.StackName = props.eksStackName;
     pipelineProps.artifactStore = {
       location: artifactBucketName,
       type: 'S3'

@@ -11,7 +11,10 @@ test('All Stacks', () => {
     expectCDK(role).to(haveResource('AWS::IAM::Role'));
     const eks = new EksStack(app, 'eks', {cfnRoleArn: role.roleArn});
     expectCDK(eks).to(haveResource('AWS::EKS::Cluster'));
-    const cicdInfra = new InfraCicdStack(app, 'cicd-infra', {cfnRoleArn: role.roleArn});
+    const cicdInfra = new InfraCicdStack(app, 'cicd-infra', {
+      cfnRoleArn: role.roleArn,
+      eksStackName: eks.stackName
+    });
     expectCDK(cicdInfra).to(haveResource('AWS::CodePipeline::Pipeline'));
     const ide = new IdeStack(app, 'ide', {
       cfnRoleName: role.roleName,
