@@ -19,6 +19,12 @@ cd crpm-eks
 # This role is used to create the EKS cluster, and it is attached to the IDE to access the cluster
 cdk deploy role
 
+# If you would like to include your user ARN so you can assume this role, get your ARN by running:
+aws iam get-user --query User.Arn --output text
+
+# Then, replace the ? with that ARN in: 
+cdk deploy role --parameters AwsArn=?
+
 # Copy the ARN of the role deployed above.  It's visible in the deploy **Outputs** and looks like
 # arn:aws:iam::123:role/eks-role-us-east-1.  Then, deploy the EKS cluster in a new VPC using that
 # role by passing in the role ARN (ex. cdk deploy eks -r arn:aws:iam::123:role/eks-role-us-east-1).

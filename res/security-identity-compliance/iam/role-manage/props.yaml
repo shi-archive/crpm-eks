@@ -11,6 +11,11 @@ assumeRolePolicyDocument:
           - ec2.amazonaws.com
       Action:
         - sts:AssumeRole
+    - Effect: ''
+      Principal:
+        AWS: ''
+      Action:
+        - sts:AssumeRole
 
 # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-description
 # Type: string
@@ -62,6 +67,10 @@ policies:
             - 's3:*'
             - 'sns:*'
           Resource: '*'
+        - Effect: Allow
+          Action:
+            - 'sts:AssumeRole'
+          Resource: ''
 
     # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
     # Type: string
