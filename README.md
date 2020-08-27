@@ -20,7 +20,7 @@ cd crpm-eks
 cdk deploy role
 
 # If you would like to include your user ARN so you can assume this role, get your ARN by running:
-aws iam get-user --query User.Arn --output text
+aws sts get-caller-identity --query Arn --output text
 
 # Then, replace the ? with that ARN in: 
 cdk deploy role --parameters AwsArn=?
