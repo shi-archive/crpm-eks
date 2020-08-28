@@ -4,6 +4,7 @@ import * as cdk from '@aws-cdk/core';
 import { RoleStack } from '../lib/role-stack';
 import { EksStack } from '../lib/eks-stack';
 import { InfraCicdStack } from '../lib/ci-cd-infra-stack';
+import { AppCicdStack } from '../lib/ci-cd-app-stack';
 import { IdeStack } from '../lib/ide-stack';
 
 const app = new cdk.App();
@@ -22,6 +23,15 @@ const cicdInfra = new InfraCicdStack(app, 'cicd-infra', {
   cfnRoleArn: role.roleArn,
   eksStackName: eks.stackName
 });
+
+new AppCicdStack(app, `cicd-app`, {
+  stackName: 'eks-ci-cd-app',
+  description: 'Application CI-CD',
+  cfnRoleName: role.roleName,
+  clusterName: eks.clusterName
+});
+
+
 new IdeStack(app, 'ide', {
   stackName: 'eks-ide',
   description: 'Cloud9 IDE with kubectl configured with access to the cluster and infrastructure code checked out',
