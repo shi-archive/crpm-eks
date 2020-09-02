@@ -23,15 +23,12 @@ const cicdInfra = new InfraCicdStack(app, 'cicd-infra', {
   cfnRoleArn: role.roleArn,
   eksStackName: eks.stackName
 });
-
 new AppCicdStack(app, `cicd-app`, {
   stackName: 'eks-ci-cd-app',
   description: 'Application CI-CD',
-  cfnRoleName: role.roleName,
+  cfnRoleArn: role.roleArn,
   clusterName: eks.clusterName
 });
-
-
 new IdeStack(app, 'ide', {
   stackName: 'eks-ide',
   description: 'Cloud9 IDE with kubectl configured with access to the cluster and infrastructure code checked out',

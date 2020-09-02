@@ -11,7 +11,7 @@ assumeRolePolicyDocument:
           - ec2.amazonaws.com
       Action:
         - sts:AssumeRole
-    - Effect: ''
+    - Effect: Allow
       Principal:
         AWS: ''
       Action:

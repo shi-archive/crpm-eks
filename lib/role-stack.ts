@@ -12,34 +12,15 @@ export class RoleStack extends cdk.Stack {
     // AWS ARN Parameter
     const awsArnParameter = new cdk.CfnParameter(this, 'AwsArn', {
       type: 'String',
-      default: '',
-      description: 'Optional principal AWS ARN (ex. user ARN) that will be given permission to assume this role'
+      description: 'Principal AWS ARN (ex. user ARN) that will be given permission to assume this role'
     });
-    
-    // Allow AssumeRole Condition
-    const allowAssumeRole = new cdk.CfnCondition(this, 'AllowAssumeRoleCondition', {
-      expression: cdk.Fn.conditionNot(cdk.Fn.conditionEquals(awsArnParameter, ''))
-    });
-    
-    const allowOrDeny = cdk.Fn.conditionIf(
-      'AllowAssumeRoleCondition',
-      'Allow',
-      'Deny'
-    );
-    
-    const awsArn = cdk.Fn.conditionIf(
-      'AllowAssumeRoleCondition',
-      awsArnParameter.valueAsString,
-      '*'
-    );
     
     // Role
     const roleProps = crpm.load<iam.CfnRoleProps>(
       `${__dirname}/../res/security-identity-compliance/iam/role-manage/props.yaml`
     );
     roleProps.roleName = cdk.Fn.join('-', [cdk.Aws.STACK_NAME, this.region]);
-    roleProps.assumeRolePolicyDocument.Statement[1].Effect = allowOrDeny;
-    roleProps.assumeRolePolicyDocument.Statement[1].Principal.AWS = awsArn;
+    roleProps.assumeRolePolicyDocument.Statement[1].Principal.AWS = awsArnParameter.valueAsString;
     roleProps.policies[0].policyDocument.Statement[1].Resource = cdk.Fn.join('', [
       'arn:aws:iam::',
       this.account,

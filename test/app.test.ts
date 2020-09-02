@@ -3,6 +3,7 @@ import * as cdk from '@aws-cdk/core';
 import { RoleStack } from '../lib/role-stack';
 import { EksStack } from '../lib/eks-stack';
 import { InfraCicdStack } from '../lib/ci-cd-infra-stack';
+import { AppCicdStack } from '../lib/ci-cd-app-stack';
 import { IdeStack } from '../lib/ide-stack';
 
 test('All Stacks', () => {
@@ -16,6 +17,11 @@ test('All Stacks', () => {
       eksStackName: eks.stackName
     });
     expectCDK(cicdInfra).to(haveResource('AWS::CodePipeline::Pipeline'));
+    const cicdApp = new AppCicdStack(app, 'cicd-app', {
+      cfnRoleArn: role.roleArn,
+      clusterName: eks.clusterName
+    });
+    expectCDK(cicdApp).to(haveResource('AWS::CodePipeline::Pipeline'));
     const ide = new IdeStack(app, 'ide', {
       cfnRoleName: role.roleName,
       clusterName: eks.clusterName,

@@ -1,70 +1,99 @@
 import * as cdk from '@aws-cdk/core';
+import * as codebuild from '@aws-cdk/aws-codebuild';
+import * as codecommit from '@aws-cdk/aws-codecommit';
+import * as codepipeline from '@aws-cdk/aws-codepipeline';
+import * as ecr from '@aws-cdk/aws-ecr';
 import * as iam from '@aws-cdk/aws-iam';
-import * as eks from '@aws-cdk/aws-eks';
-import codecommit = require('@aws-cdk/aws-codecommit');
-import ecr = require('@aws-cdk/aws-ecr');
-import codepipeline = require('@aws-cdk/aws-codepipeline');
-import pipelineAction = require('@aws-cdk/aws-codepipeline-actions');
-import { codeToECRspec, deployToEKSspec } from '../utils/buildspecs';
+import * as pipelineaction from '@aws-cdk/aws-codepipeline-actions';
+import { ecrBuildSpec, eksBuildSpec } from '../utils/buildspec';
 
-export interface CicdProps extends cdk.StackProps {
-    firstRegionRole: iam.Role
+export interface AppCicdStackProps extends cdk.StackProps {
+  cfnRoleArn: string,
+  clusterName: string
+}
+
+export class AppCicdStack extends cdk.Stack {
+  constructor(scope: cdk.Construct, id: string, props: AppCicdStackProps) {
+    super(scope, id, props);
+    
+    const repo = new codecommit.Repository(this, 'CodeCommitRepository', {
+      repositoryName: cdk.Aws.STACK_NAME
+    });
+
+    const ecrRepo = new ecr.Repository(this, 'ECRRepository');
+
+    const ecrProject = new codebuild.PipelineProject(this, 'ECRProject', {
+      environment: {
+        buildImage: codebuild.LinuxBuildImage.UBUNTU_14_04_DOCKER_18_09_0,
+        privileged: true
+      },
+      environmentVariables: {
+        'ECR_REPO_URI': {
+          value: ecrRepo.repositoryUri
+        }
+      },
+      buildSpec: ecrBuildSpec()
+    });
+    
+    ecrRepo.grantPullPush(ecrProject.role);
+
+    const eksProject = new codebuild.PipelineProject(this, 'EKSProject', {
+      environment: {
+        buildImage: codebuild.LinuxBuildImage.fromAsset(this, 'Image', {
+          directory: './utils/buildimage'
+        })
+      },
+      environmentVariables: { 
+        'REGION': {value: this.region},
+        'CLUSTER_NAME': {value: props.clusterName},
+        'ECR_REPO_URI': {value: ecrRepo.repositoryUri},
+      },
+      buildSpec: eksBuildSpec(props.cfnRoleArn)
+    });
+            
+    eksProject.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['eks:DescribeCluster'],
+        resources: [`*`]
+      })
+    );
+
+    eksProject.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ['sts:AssumeRole'],
+        resources: [props.cfnRoleArn]
+      })
+    );
+
+    const artifact = new codepipeline.Artifact();
+
+    new codepipeline.Pipeline(this, 'Pipeline', {
+      stages: [{
+        stageName: 'Source',
+        actions: [new pipelineaction.CodeCommitSourceAction({
+          actionName: 'Fetch',
+          repository: repo,
+          output: artifact,
+        })]
+      }, {
+        stageName: 'Build',
+        actions: [new pipelineaction.CodeBuildAction({
+          actionName: 'BuildAndPushToECR',
+          input: artifact,
+          project: ecrProject
+        })]
+      }, {
+        stageName: 'Deploy',
+        actions: [new pipelineaction.CodeBuildAction({
+          actionName: 'DeployToEKS',
+          input: artifact,
+          project: eksProject
+        })]
+      }]
+    });
+    
+    new cdk.CfnOutput(this, 'CodeCommitURL', {value: repo.repositoryCloneUrlHttp});
   }
-
-export class CicdStack extends cdk.Stack {
-
-    constructor(scope: cdk.Construct, id: string, props: CicdProps) {
-        super(scope, id, props);
-
-        const primaryRegion = 'us-east-2';
-        
-
-        const octankRepo = new codecommit.Repository(this, 'octank-for-eks', {
-        repositoryName: `octank-${cdk.Stack.of(this).region}`
-        });
-
-        new cdk.CfnOutput(this, `codecommit-uri`, {
-        exportName: 'CodeCommitURL',
-        value: octankRepo.repositoryCloneUrlHttp
-        });
-
-        const ecrForMainRegion = new ecr.Repository(this, `ecr-for-octank`);
-
-        const buildForECR = codeToECRspec(this, ecrForMainRegion.repositoryUri);
-        ecrForMainRegion.grantPullPush(buildForECR.role!);
-
-        const deployToMainCluster = deployToEKSspec(this, primaryRegion, ecrForMainRegion, props.firstRegionRole);
-
-        const sourceOutput = new codepipeline.Artifact();
-
-        new codepipeline.Pipeline(this, 'multi-region-eks-dep', {
-            stages: [ {
-                    stageName: 'Source',
-                    actions: [ new pipelineAction.CodeCommitSourceAction({
-                            actionName: 'CatchSourcefromCode',
-                            repository: octankRepo,
-                            output: sourceOutput,
-                        })]
-                },{
-                    stageName: 'Build',
-                    actions: [ new pipelineAction.CodeBuildAction({
-                        actionName: 'BuildAndPushtoECR',
-                        input: sourceOutput,
-                        project: buildForECR
-                    })]
-                },
-                {
-                    stageName: 'DeployToMainEKScluster',
-                    actions: [ new pipelineAction.CodeBuildAction({
-                        actionName: 'DeployToMainEKScluster',
-                        input: sourceOutput,
-                        project: deployToMainCluster
-                    })]
-                }
-                
-            ]
-        });
-    }
 }
 
 

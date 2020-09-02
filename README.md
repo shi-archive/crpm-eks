@@ -17,12 +17,11 @@ cd crpm-eks
 
 # Deploy the EKS management role CloudFormation stack
 # This role is used to create the EKS cluster, and it is attached to the IDE to access the cluster
-cdk deploy role
 
-# If you would like to include your user ARN so you can assume this role, get your ARN by running:
+# Find your user ARN by running:
 aws sts get-caller-identity --query Arn --output text
 
-# Then, replace the ? with that ARN in: 
+# Then, replace ? with that ARN in: 
 cdk deploy role --parameters AwsArn=?
 
 # Copy the ARN of the role deployed above.  It's visible in the deploy **Outputs** and looks like
