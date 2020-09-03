@@ -84,7 +84,7 @@ environment:
   # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-codebuild-project-environment.html#cfn-codebuild-project-environment-image
   # Type: string
   # Required
-  image: 'aws/codebuild/amazonlinux2-x86_64-standard:2.0'
+  image: 'aws/codebuild/amazonlinux2-x86_64-standard:3.0'
 
   # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-codebuild-project-environment.html#cfn-codebuild-project-environment-imagepullcredentialstype
   # Type: string

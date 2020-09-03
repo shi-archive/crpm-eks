@@ -30,7 +30,7 @@ cdk deploy role --parameters AwsArn=?
 cdk deploy eks -r 
 
 # Deploy the infrastructure CI/CD
-cdk deploy cicd-infra
+cdk deploy cicd
 
 # Deploy the Cloud9 IDE with kubectl ready to use and infrastructure code ready to edit
 cdk deploy ide

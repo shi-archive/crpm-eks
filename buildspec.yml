@@ -10,7 +10,7 @@ phases:
   build:
     commands:
       - cdk synth eks
-      - cdk synth cicd-infra
+      - cdk synth cicd
   post_build:
     commands:
       - >-
@@ -18,8 +18,8 @@ phases:
         file://cdk.out/eks.template.json
       - >-
         aws cloudformation validate-template --template-body
-        file://cdk.out/cicd-infra.template.json
+        file://cdk.out/cicd.template.json
 artifacts:
   files:
     - cdk.out/eks.template.json
-    - cdk.out/cicd-infra.template.json
+    - cdk.out/cicd.template.json

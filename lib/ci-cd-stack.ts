@@ -10,20 +10,20 @@ import * as s3 from '@aws-cdk/aws-s3';
 import * as crpm from 'crpm';
 import * as fs from 'fs';
 
-interface InfraCicdStackProps extends cdk.StackProps {
+interface CicdStackProps extends cdk.StackProps {
   cfnRoleArn: string;
   eksStackName: string;
 }
 
-export class InfraCicdStack extends cdk.Stack {
+export class CicdStack extends cdk.Stack {
   readonly lambdaRoleArn: string;
   readonly repoName: string;
   
-  constructor(scope: cdk.Construct, id: string, props: InfraCicdStackProps) {
+  constructor(scope: cdk.Construct, id: string, props: CicdStackProps) {
     super(scope, id, props);
     
     // S3 bucket
-    let artifactBucket;
+    let artifactBucket: s3.CfnBucket;
     let artifactBucketName = this.node.tryGetContext('artifact_bucket_name');
     if (!artifactBucketName) {
       artifactBucket = new s3.CfnBucket(
@@ -59,11 +59,7 @@ export class InfraCicdStack extends cdk.Stack {
     crProps.serviceToken = fn.attrArn;
     const cr = new cfn.CfnCustomResource(this, 'CustomResource', crProps);
     cr.addPropertyOverride('ArtifactBucketName', artifactBucketName);
-    if (artifactBucket != undefined) {
-      cr.addPropertyOverride('EmptyBucketOnDelete', true);
-    } else {
-      cr.addPropertyOverride('EmptyBucketOnDelete', false);
-    }
+    cr.addPropertyOverride('EmptyBucketOnDelete', artifactBucket != undefined);
     
     // CodeCommit repository
     const repoProps = crpm.load<codecommit.CfnRepositoryProps>(
