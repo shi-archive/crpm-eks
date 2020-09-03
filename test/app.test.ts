@@ -11,7 +11,7 @@ test('All Stacks', () => {
     expectCDK(role).to(haveResource('AWS::IAM::Role'));
     const eks = new EksStack(app, 'eks', {cfnRoleArn: role.roleArn});
     expectCDK(eks).to(haveResource('AWS::EKS::Cluster'));
-    const cicd = new CicdStack(app, 'cicd-infra', {
+    const cicd = new CicdStack(app, 'cicd', {
       cfnRoleArn: role.roleArn,
       eksStackName: eks.stackName
     });
