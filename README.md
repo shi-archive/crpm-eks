@@ -17,12 +17,7 @@ cd crpm-eks
 
 # Deploy the EKS management role CloudFormation stack
 # This role is used to create the EKS cluster, and it is attached to the IDE to access the cluster
-
-# Find your user ARN by running:
-aws sts get-caller-identity --query Arn --output text
-
-# Then, replace ? with that ARN in: 
-cdk deploy role --parameters AwsArn=?
+cdk deploy role --parameters AwsArn=$(aws sts get-caller-identity --query Arn --output text)
 
 # Copy the ARN of the role deployed above.  It's visible in the deploy **Outputs** and looks like
 # arn:aws:iam::123:role/eks-role-us-east-1.  Then, deploy the EKS cluster in a new VPC using that
