@@ -8,7 +8,6 @@ assumeRolePolicyDocument:
       Principal:
         Service:
           - cloudformation.amazonaws.com
-          - codebuild.amazonaws.com
           - ec2.amazonaws.com
       Action:
         - sts:AssumeRole
