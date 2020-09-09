@@ -260,7 +260,7 @@ export class EksStack extends cdk.Stack {
     );
     const fargatePodExecutionRole = new iam.CfnRole(this, 'FargatePodExecutionRole', fargatePodExecutionRoleProps);
     
-    // Fargate Pod Execution Role ARN Output
+    // Fargate Pod Execution Role ARN
     new cdk.CfnOutput(this, 'FargatePodExecutionRoleArn', {value: fargatePodExecutionRole.attrArn});
     
     // Update kubeconfig Command
