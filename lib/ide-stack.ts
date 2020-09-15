@@ -42,7 +42,6 @@ export class IdeStack extends cdk.Stack {
       `${__dirname}/../res/security-identity-compliance/iam/instance-profile-ide/props.yaml`
     );
     instanceProfileProps.roles = [props.cfnRoleName];
-    instanceProfileProps.instanceProfileName = cdk.Aws.STACK_NAME;
     const instanceProfile = new iam.CfnInstanceProfile(this, "InstanceProfile", instanceProfileProps);
     
     // Systems Manager Document
@@ -52,7 +51,6 @@ export class IdeStack extends cdk.Stack {
     ssmDocContent = ssmDocContent.replace(/\$REGION/g, this.region);
     ssmDocContent = ssmDocContent.replace(/\$CLUSTER_NAME/g, props.clusterName);
     ssmDocProps.content = yaml.safeLoad(ssmDocContent);
-    ssmDocProps.name = `${cdk.Aws.STACK_NAME}-configure-cloud9`;
     const ssmDoc = new ssm.CfnDocument(this, "Document", ssmDocProps);
     
     // Lambda Function
@@ -62,7 +60,6 @@ export class IdeStack extends cdk.Stack {
       zipFile: fs.readFileSync(`${fnDir}/index.js`, 'utf8')
     }
     fnProps.role = props.lambdaRoleArn;
-    fnProps.functionName = `${cdk.Aws.STACK_NAME}-custom-resource`;
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
     
     // Custom Resource

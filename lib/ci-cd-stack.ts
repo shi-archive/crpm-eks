@@ -38,7 +38,6 @@ export class CicdStack extends cdk.Stack {
     const fnRoleProps = crpm.load<iam.CfnRoleProps>(
       `${__dirname}/../res/security-identity-compliance/iam/role-lambda/props.yaml`
     );
-    fnRoleProps.roleName = `lambda-${cdk.Aws.STACK_NAME}`;
     const fnRole = new iam.CfnRole(this, 'LambdaRole', fnRoleProps);
     this.lambdaRoleArn = fnRole.attrArn;
     
@@ -49,7 +48,6 @@ export class CicdStack extends cdk.Stack {
       zipFile: fs.readFileSync(`${fnDir}/index.py`, 'utf8')
     }
     fnProps.role = fnRole.attrArn;
-    fnProps.functionName = `${cdk.Aws.STACK_NAME}-custom-resource`;
     const fn = new lambda.CfnFunction(this, 'Function', fnProps);
     
     // Custom resource
@@ -75,7 +73,6 @@ export class CicdStack extends cdk.Stack {
     const projectRoleProps = crpm.load<iam.CfnRoleProps>(
       `${__dirname}/../res/security-identity-compliance/iam/role-codebuild/props.yaml`
     );
-    projectRoleProps.roleName = `codebuild-${cdk.Aws.STACK_NAME}`;
     const projectRole = new iam.CfnRole(this, 'CodeBuildRole', projectRoleProps);
     
     // CodeBuild project
@@ -83,14 +80,12 @@ export class CicdStack extends cdk.Stack {
       `${__dirname}/../res/developer-tools/codebuild/project/props.yaml`
     );
     projectProps.serviceRole = projectRole.attrArn;
-    projectProps.name = cdk.Aws.STACK_NAME;
     const project = new codebuild.CfnProject(this, 'Project', projectProps);
     
     // CodePipeline role
     const pipelineRoleProps = crpm.load<iam.CfnRoleProps>(
       `${__dirname}/../res/security-identity-compliance/iam/role-codepipeline/props.yaml`
     );
-    pipelineRoleProps.roleName = `codepipeline-${cdk.Aws.STACK_NAME}`;
     const pipelineRole = new iam.CfnRole(this, 'CodePipelineRole', pipelineRoleProps);
     
     // CodePipeline pipeline
@@ -109,14 +104,12 @@ export class CicdStack extends cdk.Stack {
       location: artifactBucketName,
       type: 'S3'
     };
-    pipelineProps.name = cdk.Aws.STACK_NAME;
     const pipeline = new codepipeline.CfnPipeline(this, 'Pipeline', pipelineProps);
     
     // CloudWatch Events role
     const eventsRoleProps = crpm.load<iam.CfnRoleProps>(
       `${__dirname}/../res/security-identity-compliance/iam/role-events/props.yaml`
     );
-    eventsRoleProps.roleName = `cloudwatch-events-${cdk.Aws.STACK_NAME}`;
     const eventsRole = new iam.CfnRole(this, 'EventsRole', eventsRoleProps);
     
     // CloudWatch Events rule
@@ -126,7 +119,6 @@ export class CicdStack extends cdk.Stack {
     ruleProps.eventPattern.resources = [
       repo.attrArn
     ]
-    ruleProps.name = `codepipeline-${cdk.Aws.STACK_NAME}`;
     const target = (ruleProps.targets as any)[0];
     target.arn = `arn:aws:codepipeline:${this.region}:${this.account}:${pipeline.ref}`;
     target.roleArn = eventsRole.attrArn;

@@ -239,7 +239,6 @@ export class EksStack extends cdk.Stack {
       ]
     }
     eksProps.roleArn = serviceRole.attrArn;
-    eksProps.name = cdk.Aws.STACK_NAME;
     const cluster = new eks.CfnCluster(this, 'ControlPlane', eksProps);
     this.clusterName = cluster.ref;
     
