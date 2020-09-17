@@ -17,7 +17,7 @@ const eks = new EksStack(app, 'eks', {
   cfnRoleArn: role.roleArn
 });
 const cicd = new CicdStack(app, 'cicd', {
-  stackName: 'eks-ci-cd-infra',
+  stackName: 'eks-ci-cd',
   description: 'Infrastructure CI-CD',
   cfnRoleArn: role.roleArn,
   eksStackName: eks.stackName
