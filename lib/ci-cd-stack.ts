@@ -98,8 +98,12 @@ export class CicdStack extends cdk.Stack {
     stages[1].actions[0].configuration.ProjectName = project.ref;
     stages[2].actions[0].configuration.RoleArn = props.cfnRoleArn;
     stages[2].actions[0].configuration.StackName = props.eksStackName;
+    stages[2].actions[1].configuration.RoleArn = props.cfnRoleArn;
+    stages[2].actions[1].configuration.StackName = cdk.Aws.STACK_NAME;
     stages[3].actions[0].configuration.RoleArn = props.cfnRoleArn;
     stages[3].actions[0].configuration.StackName = props.eksStackName;
+    stages[3].actions[1].configuration.RoleArn = props.cfnRoleArn;
+    stages[3].actions[1].configuration.StackName = cdk.Aws.STACK_NAME;
     pipelineProps.artifactStore = {
       location: artifactBucketName,
       type: 'S3'
