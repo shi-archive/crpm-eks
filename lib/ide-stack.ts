@@ -25,7 +25,12 @@ export class IdeStack extends cdk.Stack {
     );
     cloud9Props.name = cdk.Aws.STACK_NAME;
     cloud9Props.repositories = [{
-      pathComponent: '/crpm-eks',
+      pathComponent: cdk.Fn.join('',
+        [
+          '/',
+          props.repoName
+        ]
+      ),
       repositoryUrl: cdk.Fn.join('',
         [
           'https://git-codecommit.',

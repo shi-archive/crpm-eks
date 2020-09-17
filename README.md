@@ -7,13 +7,13 @@ Deploy an EKS cluster and an IDE that can be used to run kubectl commands.
 ```bash
 npm uninstall -g cdk
 npm i -g aws-cdk@1.57.0 crpm@2.1.0 typescript
-npm i
 
 # Clone the infrastructure code
 git clone https://github.com/mscribe/crpm-eks
 
 # Change directory
 cd crpm-eks
+npm i
 
 # Deploy the EKS management role CloudFormation stack
 # This role is used to create the EKS cluster, and it is attached to the IDE to access the cluster
