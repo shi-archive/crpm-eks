@@ -83,5 +83,5 @@ k patch deployment coredns \
 
 ```bash
 # Destroy the IDE, CI/CD pipeline, cluster and role
-cdk destroy ide cicd-infra eks role
+cdk destroy ide cicd eks role
 ```
