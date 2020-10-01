@@ -56,7 +56,7 @@ export class IdeStack extends cdk.Stack {
     ssmDocContent = ssmDocContent.replace(/\$REGION/g, this.region);
     ssmDocContent = ssmDocContent.replace(/\$CLUSTER_NAME/g, props.clusterName);
     ssmDocProps.content = yaml.safeLoad(ssmDocContent);
-    const ssmDoc = new ssm.CfnDocument(this, "Document", ssmDocProps);
+    const ssmDoc = new ssm.CfnDocument(this, 'Document', ssmDocProps);
     
     // Lambda Function
     const fnDir = `${__dirname}/../res/compute/lambda/function-custom-resource-ide`;
