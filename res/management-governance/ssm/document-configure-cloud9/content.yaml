@@ -7,7 +7,7 @@ mainSteps:
       runCommand:
         # Install compatible versions of AWS CDK & CRPM
         - runuser -l ec2-user -c 'npm uninstall -g cdk'
-        - runuser -l ec2-user -c 'npm install -g aws-cdk@1.57.0 crpm@2.1.0 typescript'
+        - runuser -l ec2-user -c 'npm install -g crpm typescript'
         # Upgrade the AWS CLI to the latest version
         - runuser -l ec2-user -c 'pip2 --disable-pip-version-check install --user --upgrade awscli'
         # Install kubectl
