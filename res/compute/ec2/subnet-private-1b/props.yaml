@@ -1,7 +1,7 @@
 # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html#cfn-ec2-subnet-cidrblock
 # Type: string
 # Required
-cidrBlock: '192.168.64.0/19'
+cidrBlock: '192.168.96.0/19'
 
 # Documentation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ec2-subnet.html#cfn-awsec2subnet-prop-vpcid
 # Type: string
