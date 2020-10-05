@@ -5,8 +5,7 @@ mainSteps:
     name: Install
     inputs:
       runCommand:
-        # Install compatible versions of AWS CDK & CRPM
-        - runuser -l ec2-user -c 'npm uninstall -g cdk'
+        # Install dependencies
         - runuser -l ec2-user -c 'npm install -g crpm typescript'
         # Upgrade the AWS CLI to the latest version
         - runuser -l ec2-user -c 'pip2 --disable-pip-version-check install --user --upgrade awscli'
