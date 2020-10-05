@@ -62,7 +62,7 @@ export class EksStack extends cdk.Stack {
     const publicSubnet1BProps = crpm.load<ec2.CfnSubnetProps>(
       `${__dirname}/../res/compute/ec2/subnet-public-1b/props.yaml`
     );
-    publicSubnet1BProps.availabilityZone = `${this.region}a`;
+    publicSubnet1BProps.availabilityZone = `${this.region}b`;
     publicSubnet1BProps.vpcId = vpc.ref;
     const publicSubnet1B = new ec2.CfnSubnet(this, 'PublicSubnet1B', publicSubnet1BProps);
     
