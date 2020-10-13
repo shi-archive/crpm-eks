@@ -5,7 +5,8 @@ phases:
       nodejs: 10
     commands:
       - npm uninstall -g cdk
-      - npm install -g aws-cdk@1.57.0 typescript
+      - npm install -g aws-cdk
+      - npm install -g typescript
       - npm i
   build:
     commands:
