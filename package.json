@@ -10,10 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mscribe/crpm-eks.git"
+    "url": "https://github.com/shi/crpm-eks.git"
   },
   "bin": {
-    "crpm-eks": "bin/crpm-eks.js"
+    "crpm-eks": "bin/app.js"
   },
   "scripts": {
     "build": "tsc",
